@@ -4,36 +4,12 @@ on:
     branches:
       - main
 jobs:
-  # First Job
-  install-and-test:
+  build:
     runs-on: ubuntu-latest
+    container: reactnativecommunity/react-native-android
     steps:
-      - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
-      # For testing
-      - name: Run tests
-        run: |
-          npm test
-  # Second Job
-  build-android:
-    needs: install-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install npm dependencies
-        run: |
-          npm install
-      - name: Make Gradlew Executable
-        run: cd android && chmod +x ./gradlew
-        # Build Command
-      - name: Build Android Release
-        run: |
-          cd android && gradlew assembleRelease
-      # Upload to Artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/
+    - uses: actions/checkout@v2
+    - name: Envinfo
+      run: npx envinfo
+    - name: Build application
+      run: yarn install && cd android && chmod +x gradlew && ./gradlew assembleRelease
